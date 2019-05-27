@@ -5,7 +5,7 @@ import json
 import websocket
 
 import config
-import logs
+import log
 
 class ProtocolError(Exception):
     pass
@@ -39,9 +39,9 @@ class ServerProxy:
         return response['result']
 
     def _run_request(self, request, notify=None):
-        logs.add_request(request)
+        log.add_request(request)
         response = self.__transport.request(self.__url, request)
-        logs.add_response(response)
+        log.add_response(response)
         if not response:
             return None
         return_obj = loads(response)
