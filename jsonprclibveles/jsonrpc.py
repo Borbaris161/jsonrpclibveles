@@ -1,11 +1,10 @@
-#!/usr/bin/env python
 # -*- coding: utf-8
 
 import json
 import websocket
 
-import config
-import log
+from jsonprclibveles import config, jsonclass, history
+
 
 class ProtocolError(Exception):
     pass
@@ -39,9 +38,9 @@ class ServerProxy:
         return response['result']
 
     def _run_request(self, request, notify=None):
-        log.add_request(request)
+        history.add_request(request)
         response = self.__transport.request(self.__url, request)
-        log.add_response(response)
+        history.add_response(response)
         if not response:
             return None
         return_obj = loads(response)
@@ -65,6 +64,7 @@ class ServerProxy:
             return self.__transport
         raise AttributeError("Attribute %r not found" % (attr,))
 
+
 class JSONParser(object):
     def __init__(self, target):
         self.target = target
@@ -75,6 +75,7 @@ class JSONParser(object):
     def close(self):
         pass
 
+
 class JSONTarget(object):
     def __init__(self):
         self.data = []
@@ -84,6 +85,7 @@ class JSONTarget(object):
 
     def close(self):
         return ''.join(self.data)
+
 
 class WSTransport:
 
@@ -102,6 +104,7 @@ class WSTransport:
     def response(self):
         result = self.ws.recv()
         return result
+
 
 class _Method:
     def __init__(self, send, name):
@@ -126,6 +129,7 @@ class _Method:
     def __dir__(self):
         return self.__dict__.keys()
 
+
 class _Notify(object):
     def __init__(self, request):
 
@@ -133,6 +137,7 @@ class _Notify(object):
 
     def __getattr__(self, name):
         return _Method(self._request, name)
+
 
 class MultiCallMethod(object):
 
@@ -161,6 +166,7 @@ class MultiCallMethod(object):
         self.method = new_method
         return self
 
+
 class MultiCallNotify(object):
 
     def __init__(self, multicall):
@@ -170,6 +176,7 @@ class MultiCallNotify(object):
         new_job = MultiCallMethod(name, notify=True)
         self.multicall._job_list.append(new_job)
         return new_job
+
 
 class MultiCallIterator(object):
 
@@ -187,6 +194,7 @@ class MultiCallIterator(object):
 
     def __len__(self):
         return len(self.results)
+
 
 class MultiCall(object):
 
@@ -215,6 +223,7 @@ class MultiCall(object):
         return new_job
 
     __call__ = _request
+
 
 class _Method:
     def __init__(self, send, name):
@@ -310,7 +319,7 @@ def dumps(params=[], methodname=None, methodresponse=None, notify=None):
                          ' methodresponse must be set to True.')
 
     if config.use_jsonclass is True:
-        import jsonclass
+        pass
     params = jsonclass.dump(params)
 
     if methodresponse is True:

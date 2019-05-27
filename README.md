@@ -1,2 +1,0 @@
-# jsonrpclibveles
-jsonrpclib для velespy

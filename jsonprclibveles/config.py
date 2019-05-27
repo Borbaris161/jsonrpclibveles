@@ -1,3 +1,5 @@
+# -*- coding: utf-8
+
 import sys
 
 PYTHON_VERSION = ('Python 2', 'Python 3')

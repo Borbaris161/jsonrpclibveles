@@ -1,8 +1,9 @@
+# -*- coding: utf-8
 
 import inspect
 import re
 
-import config
+import jsonprclibveles.config
 
 iter_types = [
     dict,
@@ -34,9 +35,9 @@ class TranslationError(Exception):
 
 def dump(obj, serialize_method=None, ignore_attribute=None, ignore=[]):
     if not serialize_method:
-        serialize_method = config.serialize_method
+        serialize_method = jsonprclibveles.config.serialize_method
     if not ignore_attribute:
-        ignore_attribute = config.ignore_attribute
+        ignore_attribute = jsonprclibveles.config.ignore_attribute
     obj_type = type(obj)
     if obj_type in numeric_types+string_types+value_types:
         return obj
@@ -108,10 +109,10 @@ def load(obj):
     json_class = None
     if len(json_module_parts) == 1:
         # Local class name -- probably means it won't work
-        if json_module_parts[0] not in config.classes.keys():
+        if json_module_parts[0] not in jsonprclibveles.config.classes.keys():
             raise TranslationError('Unknown class or module %s.' %
                                    json_module_parts[0])
-        json_class = config.classes[json_module_parts[0]]
+        json_class = jsonprclibveles.config.classes[json_module_parts[0]]
     else:
         json_class_name = json_module_parts.pop()
         json_module_tree = '.'.join(json_module_parts)
