@@ -3,7 +3,7 @@
 import json
 import websocket
 
-from jsonprclibveles import config, jsonclass, history
+from jsonprclibveles import config, jsonclass, logs
 
 
 class ProtocolError(Exception):
@@ -38,9 +38,9 @@ class ServerProxy:
         return response['result']
 
     def _run_request(self, request, notify=None):
-        history.add_request(request)
+        logs.add_request(request)
         response = self.__transport.request(self.__url, request)
-        history.add_response(response)
+        logs.add_response(response)
         if not response:
             return None
         return_obj = loads(response)
